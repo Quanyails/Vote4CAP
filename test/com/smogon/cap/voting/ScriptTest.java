@@ -22,6 +22,7 @@ public class ScriptTest
 //		boolean validate = flag.equals("-v");
 		
 		Script.main();
+//		Script.main(link, pollName);
 		Script.main(link, pollName, flag);
 	}
 }

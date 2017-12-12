@@ -19,58 +19,8 @@ public final class Script
 {
 	
 	// Instance fields
-	
-	/*
-	 * The following field is an anonymous subclass of XenForoScraper.
-	 * Anonymous subclasses are more convenient when a script needs
-	 * a custom subclass of a class, but doesn't want to make a new clsas
-	 * when little needs changing (i.e., a single overridden method).
-	 */
-	private XenForoScraper scraper = new XenForoScraper()
-	{
-		// Static constants
-		private final String TAGNAME = "br";
-		private final String TAG = "<" + this.TAGNAME + ">";
-		private final Whitelist WHITELIST = Whitelist.none().addTags(this.TAGNAME); // For Jsoup
-		
-		/**
-		 * Given an HTML element representing a user's post, 
-		 * this parser uses the {@code <br>} tags in the post 
-		 * as a means of determining the user's ballot.
-		 * This method assumes that the ballots in a post are at the top,
-		 * with each option separated by a {@code <br>} tag.
-		 * Once the post encounters two consecutive {@code <br>} tags, 
-		 * the post is assumed to have reached comments 
-		 * and so the rest of the text is ignored.
-		 */
-		private Function<Element, Ballot> parser = post ->
-		{
-			// Find the user who made the post.
-			User voter = new User(post.attr("data-author"));
-			
-			// Get the post message in HTML form.
-			String html = post.select(".messageText").outerHtml();
-			// Remove all HTMl except whitelisted tags.
-			String text = Jsoup.clean(html, WHITELIST).trim();
 
-			// Truncate the HTML to only the part before the comment.
-			// http://stackoverflow.com/a/4972126
-			// Regex: tag followed by any number of whitespace characters followed by another tag
-			String divider = this.TAG + "[ \\t\\n]*" + TAG;
-			String votesPart = text.split(divider, 2)[0];
-
-			// Create a vote for every line in the truncated section.
-			List<User> votes = Arrays.stream(votesPart.split(TAG))
-				.map(String::trim) // trim whitespace
-				.map(User::new)
-				.collect(Collectors.toList());
-
-			// Create the ballot from the data.
-			return new Ballot(voter, votes);
-		};
-		
-		@Override public Ballot parse(Element post){return parser.apply(post);}
-	};
+	private Scraper scraper = new XenForoScraper();
 	
 	// TODO: Add more print statements.
 	private void run(URL source, Poll poll, boolean verify)
@@ -120,7 +70,7 @@ public final class Script
 		{
 			System.out.println("Error or Exception while running the script: ");
 			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 }
-

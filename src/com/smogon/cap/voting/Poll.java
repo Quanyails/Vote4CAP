@@ -77,7 +77,7 @@ public interface Poll
 	 * We use a {@code} Collection as the data structure for holding ballots,
 	 * as we need the size of the voters (for majorities)
 	 * and we need to be able to iterate over the elements.
-	 * @param ballots An collection of ballots to process.
+	 * @param ballots A collection of ballots to process.
 	 * @return A sorted set of entries.
 	 */
 	SortedSet<Entry> tally(Collection<Ballot> ballots);
